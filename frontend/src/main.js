@@ -1,8 +1,9 @@
 import { Router } from "./router.js";
-import { aboutView, errorView, helpView, homeView, jobListView, jobView } from "./views.js";
+import { aboutView, clearErrorView, companyView, companyViewName, errorView, helpView, homeView, jobListView, jobView } from "./views.js";
 
 let allJobs = []
 let allCompanies = []
+let allComJob = [[]]
 
 /*window.onload = () => {
     document.getElementById('main').innerHTML = "<p>Bob will have some job's here</p>"
@@ -10,18 +11,33 @@ let allCompanies = []
 
 const router = new Router(errorView)
 
-
-
-/*router.get('/#!/about', () => {
-    aboutView('main')
-})*/
-
 router.get('/', () => {
-    console.log(router.routes)
     const jobs = getJobs(10)
-    homeView('main')
+    homeView('content-container')
     jobListView('content', jobs)
     classChanger('/')
+})
+
+
+router.get('/about', () => {
+    aboutView('content')
+    clearErrorView()
+    classChanger('/about')
+})
+
+router.get('/help', () => {
+    helpView('content')
+    clearErrorView()
+    classChanger('/help')
+})
+
+router.get('/jobs', (pathInfo) => {
+    jobView('content', getJob(pathInfo.id))
+})
+
+router.get('/companies', (pathInfo) => {
+    companyViewName('content', getCompany(pathInfo.id))
+    companyView('company-jobs', getCompanyJobs(pathInfo.id))
 })
 
 const classChanger = (path) => {
@@ -30,7 +46,7 @@ const classChanger = (path) => {
     const targetAbout = document.getElementById('about')
     const targetHelp = document.getElementById('help')
 
-    console.log(targetAbout)
+    //console.log(targetAbout)
 
     if(path === '/about') {
         targetAbout.classList.add('selected')
@@ -62,6 +78,29 @@ const loadData = () => {
         allCompanies = data.companies
         redraw()
     })
+}
+
+/*const setComJob = () => {
+    for(let i = 0; i <= allCompanies; i++) {
+        for(let j = 0; j <= allJobs; i++) {
+            if (allCompanies[i].id === allJobs[j]) {
+                
+            }
+        }
+    }
+}*/
+
+const getCompanyJobs = (id) => {
+    let jobs = []
+    let j = 0;
+
+    for(let i = 0; i < allJobs.length; i++) {
+        if (allJobs[i].attributes.company.data.id == id) {
+            jobs[j] = allJobs[i]
+            j++;
+        }
+    }
+    return jobs
 }
 
 const getJob = (id) => {
@@ -101,23 +140,36 @@ const getCompanies = () => {
 }
 
 const redraw = () => {
+
     const hash = router.splitHash()
 
     console.log("HASH", hash)
 
-    if(hash.path === '/about') {
-        aboutView('main')
-        classChanger(hash.path)
-    }
-    if(hash.path === '/help') {
-        helpView('main')
-        classChanger(hash.path)
-    }
     router.route()
+
+    console.log(allCompanies)
+    console.log(allJobs)
+    console.log(getCompany(1113))
+
+    for(let i=0; i<allCompanies.length; i++) {
+        console.log(allCompanies[i].id)
+    }
+    console.log('break')
+    for(let i=0; i<allJobs.length; i++) {
+        console.log(allJobs[i].attributes.company.data.id)
+    }
+    console.log('break')
+
+    console.log(getCompanyJobs(1097))
+
 }
 
-window.onload = loadData;
-window.onhashchange = redraw;
+window.onload = () => {
+    redraw()
+    loadData()
+}
+
+
 
 
 
