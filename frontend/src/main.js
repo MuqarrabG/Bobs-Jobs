@@ -21,13 +21,13 @@ router.get('/', () => {
 
 router.get('/about', () => {
     aboutView('content')
-    clearErrorView()
+    //clearErrorView()
     classChanger('/about')
 })
 
 router.get('/help', () => {
     helpView('content')
-    clearErrorView()
+    //clearErrorView()
     classChanger('/help')
 })
 

@@ -20,7 +20,6 @@ export const helpView = (id) => {
 export const homeView = (id) => {
     const content = `
     <div id="main">
-        <p>Bob will have some job's here</p>
     </div>
     <div id="content"></div>
     `
