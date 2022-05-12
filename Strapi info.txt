@@ -1,3 +1,6 @@
 username personal email
 password Mqstrapi7
 	 @Thruster69strapi
+
+
+	 <li><a href="/#!/companies/{{attributes.company.data.id}}">{{attributes.company.data.attributes.name}}</a></li>

@@ -1,5 +1,8 @@
-import { Router } from "./router.js";
-import { aboutView, clearErrorView, companyView, companyViewName, errorView, helpView, homeView, jobListView, jobView } from "./views.js";
+import { split_hash } from "./util.js"
+import * as views from "./views.js"
+import { Model } from "./model.js"
+import { Router } from './router.js'
+import { Auth } from "./auth.js"
 
 let allJobs = []
 let allCompanies = []
@@ -9,35 +12,38 @@ let allComJob = [[]]
     document.getElementById('main').innerHTML = "<p>Bob will have some job's here</p>"
 }*/
 
-const router = new Router(errorView)
+
+const router = new Router(views.errorView)
 
 router.get('/', () => {
-    const jobs = getJobs(10)
-    homeView('content-container')
-    jobListView('content', jobs)
+    //const jobs = getJobs(10)
+
+    const jobs = Model.getJobs(10)
+    views.homeView('content-container')
+    views.jobListView('content', jobs)
     classChanger('/')
 })
 
 
 router.get('/about', () => {
-    aboutView('content')
+    views.aboutView('content')
     //clearErrorView()
     classChanger('/about')
 })
 
 router.get('/help', () => {
-    helpView('content')
+    views.helpView('content')
     //clearErrorView()
     classChanger('/help')
 })
 
 router.get('/jobs', (pathInfo) => {
-    jobView('content', getJob(pathInfo.id))
+    views.jobView('content', getJob(pathInfo.id))
 })
 
 router.get('/companies', (pathInfo) => {
-    companyViewName('content', getCompany(pathInfo.id))
-    companyView('company-jobs', getCompanyJobs(pathInfo.id))
+    views.companyViewName('content', getCompany(pathInfo.id))
+    views.companyView('company-jobs', getCompanyJobs(pathInfo.id))
 })
 
 const classChanger = (path) => {
@@ -161,13 +167,22 @@ const redraw = () => {
     console.log('break')
 
     console.log(getCompanyJobs(1097))
+    console.log('break')
+    console.log(Model.DATA.allJobs)
 
 }
 
 window.onload = () => {
     redraw()
     loadData()
+
+    Model.loadCompanyData
+    Model.loadJobData()
+    Model.loadJobAppData
 }
+
+window.addEventListener('modelUpdated', redraw);
+window.addEventListener('userLogin', redraw);
 
 
 
