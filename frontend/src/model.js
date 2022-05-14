@@ -154,7 +154,7 @@ const Model = {
      },
     
     getCompany: (id) => {
-        let filter = "?populate=textbook&filters[id][$eq]="
+        let filter = "?populate=%2A&textbook&filters[id][$eq]="
         let url_str = Model.companies_url + filter + id
         fetch(url_str)
         .then((response) => {
@@ -164,7 +164,8 @@ const Model = {
                 // console.log("getUnit: .then unit before:", Model.unitData)
                 Model.companyData = data.data[0]
                 // console.log("getUnit: .then unit after:", Model.unitData)
-                views.companyView('content', Model.companyData)
+                views.companyViewName('content', Model.companyData)
+                views.companyView('company-jobs', Model.companyData?.attributes?.jobs?.data, Model.companyData)
                 const event = new CustomEvent("modelUpdated");
                 window.dispatchEvent(event);
         })
@@ -180,7 +181,7 @@ const Model = {
      },
     
     getJob: (id) => {
-        let filter = "?populate=textbook&filters[id][$eq]="
+        let filter = "?populate=%2A&textbook&filters[id][$eq]="
         let url_str = Model.jobs_url + filter + id
         fetch(url_str)
         .then((response) => {
@@ -190,7 +191,7 @@ const Model = {
                 // console.log("getUnit: .then unit before:", Model.unitData)
                 Model.jobData = data.data[0]
                 // console.log("getUnit: .then unit after:", Model.unitData)
-                views.jobView('content', Model.jobData)
+                //views.jobView('content', Model.jobData)
                 const event = new CustomEvent("modelUpdated");
                 window.dispatchEvent(event);
         })

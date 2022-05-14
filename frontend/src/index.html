@@ -13,19 +13,39 @@
     </head>
 
     <body>
-        <header class="main-header">
-            <nav class="nav main-nav">
-                <ul>
-                    <li class="selected" id="home"><a href="/#">Home</a></li>
-                    <li class="" id="about"><a href="/#!/about">About Us</a></li>
-                    <li class="" id="help"><a href="/#!/help">Applicant Help</a></li>
-                </ul>
-            </nav>
+        <header class="page-header">
             <h1 class="site-name">Bob's Jobs</h1>
+            <div class="page-header-main ">
+                <nav class="nav main-nav">
+                    <ul>
+                        <li class="selected" id="home"><a href="/#">Home</a></li>
+                        <li class="" id="about"><a href="/#!/about">About Us</a></li>
+                        <li class="" id="help"><a href="/#!/help">Applicant Help</a></li>
+                    </ul>
+                </nav>
+                                            
+                <div class="header-search">
+                    <label for="search">Search Jobs</label>
+                    <input id="search"  type="text" placeholder="Job keyword search..." >
+                    <button id="searchbutton">Search</button>
+                </div>
+    
+                <div class="header-auth">
+                    <form id="login-form">
+                        <label for=username> Username: </label>
+                        <input name=username>
+                        <label for=password> Password: </label>
+                        <input name=password type="password" autocomplete="on">
+                        <input id="loginbutton" type=submit><br>
+                        <a id="errorLogin"></a>
+                    </form>
+                </div>
+            </div>
         </header>
         
-        <div id='error'></div>
-        <div id="content"></div>
+        <main id="content">
+            
+        </main>
         <section id="content-container"></section>
     </body>
 </html>

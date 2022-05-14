@@ -39,7 +39,12 @@ const Auth = {
         } else {
             return null
         }
-    }
+    },
+
+    logOff: function(){
+        delete this.userData.jwt
+        delete this.userData.user
+    },
 
 
 }

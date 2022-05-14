@@ -1,3 +1,159 @@
 html {
     background-color: aquamarine;
 }
+
+
+/* CSS Stylesheet for the COMP2110 Bob's Jobs Board */
+/* Author: Muhammad Muqarrab Ghori                    */
+
+body {
+    background-color: white;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    grid-template-rows: 1fr;
+    row-gap: 0%;
+    column-gap: 0%;
+}
+
+.page-header {
+    background-color: #f7e7ce;
+    grid-column: 1/-1;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 1fr;
+    row-gap: 0px;
+    column-gap: 0px;
+}
+
+.page-header a {
+    font-size: 50px;
+}
+
+.site-name {
+    grid-column: 1/-1;
+    grid-row: 1;
+}
+
+.page-header-main{
+    grid-column: 1/-1;
+    grid-row: 2;
+
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 1fr;
+    row-gap: 0px;
+    column-gap: 0px;
+}
+
+.main-nav {
+    grid-column: 1/-1;
+    grid-row: 2;
+}
+
+.header-search {
+   grid-column: 1;
+   grid-row: 3;
+   text-align: left;
+}
+
+.header-auth {
+    grid-column: 2;
+    grid-row: 3;
+    text-align: right;
+}
+
+.page-header a, span {
+    font-size: 20px;
+    text-decoration: none;
+}
+.page-header {
+    text-align: center;
+}
+
+
+.nav ul {
+    margin: 0;
+}
+.main-nav li {
+    display: inline;
+}
+
+.currentpage ,.main-nav a {
+    display: inline-block;
+    padding: 1em;
+    color: red;
+    text-decoration: none;
+}
+.main-menu {
+    text-align: center;
+}
+.main-menu a:hover, .header-auth a:hover, .main-menu span:hover {
+    background-color: lightgray;
+}
+main {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.joblist {
+    background-color: aliceblue;
+}
+
+.job {
+    padding-bottom: 5%;
+    border: 1px;
+    border-color: black;
+    border-style: solid;
+    border-top: 0px;
+    border-bottom: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 20px;
+}
+
+.job:hover {
+    background-color: aquamarine;
+    font-size: large;
+}
+
+#employer-feedback {
+    grid-column: 3;
+    grid-row: 2;
+    padding-left: 10px;
+}
+
+#employer-feedback:hover {
+    font-size: large;
+}
+
+#search-hints {
+    background-color: white;
+    grid-column: 1;
+    grid-row: 2;
+    padding-right: 50px;
+}
+
+.link-list a {
+    text-decoration: none;
+    display: list-item;
+    padding-top: 5px;
+    font-size: medium;
+    font-style: italic;
+}
+
+#search-hints:hover {
+    font-size: x-large;
+}
+
+.link-list a:hover {
+   text-decoration: underline aqua 1px;
+}
+
+#footer {
+    background-color: pink;
+    grid-column: 1/-1;
+    grid-row: 3;
+
+    text-align: center;
+}
