@@ -1,3 +1,6 @@
+// module name: views.js
+// student name: Muhammad Muqarrab Ghori
+// student number: 47111496
 
 export const aboutView = (id) => {
     const content = `
@@ -63,7 +66,7 @@ export const jobLoggedInView = (id, job) => {
     target.innerHTML = template(job)
 }
 
-export const companyView = (id, jobArray, company) => {
+export const jobsViewBasic = (id, jobArray) => {
 
     const template = Handlebars.compile(`
         {{#each array}}
@@ -77,12 +80,8 @@ export const companyView = (id, jobArray, company) => {
         {{/each}}
     `)
 
-    //const companyLinkTemp = Handlebars.compile(`<a href="/#!/companies/{{id}}">{{attributes.name}}</a>`)
-
     const target = document.getElementById(id)
     target.innerHTML = template({array: jobArray})
-    //const targetCom = document.getElementById('company-link')
-    //targetCom.innerHTML = companyLinkTemp(company)
 }
 
 export const companyViewName = (id, company) => {
@@ -116,16 +115,28 @@ export const jobListView = (id, jobArray) => {
     target.innerHTML = template({array: jobArray})
 }
 
-export const loggedInView = (id, username) => {
+export const loggedInView = (id, id1, username) => {
     const template = Handlebars.compile(`
         <p id=UserLoggedIn>Logged in as {{user}} <button id="logoutbutton">Logout</button></p>
     `)
 
+    const template1 = Handlebars.compile(`
+        <ul>
+            <li class="selected" id="home"><a href="/#">Home</a></li>
+            <li class="" id="about"><a href="/#!/about">About Us</a></li>
+            <li class="" id="help"><a href="/#!/help">Applicant Help</a></li>
+            <li class="" id="me"><a href="/#!/me">My Page</a></li>
+        </ul>
+    `)
+
     const target = document.getElementById(id)
     target.innerHTML = template({user: username})
+
+    const target1 = document.getElementById(id1)
+    target1.innerHTML = template1()
 }
 
-export const loggedOutView = (id) => {
+export const loggedOutView = (id, id1) => {
     const template = Handlebars.compile(`
         <label for=username> Username: </label>
         <input name=username>
@@ -135,8 +146,19 @@ export const loggedOutView = (id) => {
         <a id="errorLogIn"></a>
     `)
 
+    const template1 = Handlebars.compile(`
+        <ul>
+            <li class="selected" id="home"><a href="/#">Home</a></li>
+            <li class="" id="about"><a href="/#!/about">About Us</a></li>
+            <li class="" id="help"><a href="/#!/help">Applicant Help</a></li>
+        </ul>
+    `)
+
     const target = document.getElementById(id)
     target.innerHTML = template()
+
+    const target1 = document.getElementById(id1)
+    target1.innerHTML = template1()
 }
 
 export const logInErrorView = () => {
@@ -147,6 +169,22 @@ export const logInErrorView = () => {
 export const clearLogInErrorView = () => {
     const target = document.getElementById('errorLogin')
     target.innerHTML = ``
+}
+
+export const jobAppForm = (id) => {
+    const template = Handlebars.compile(`
+        <div id=jobApplication-sub>
+            <form id=jobapplication-form action=http://localhost:8083/#!/me>
+                <p><label for=jobSubmission>Job Application Form</label></p>
+                <textarea id="jobSubmission" name="text" rows="4" cols="50"></textarea>
+                <br>
+                <input type="submit" value="Submit Application">
+            </form>
+        </div>
+    `)
+
+    const target = document.getElementById(id)
+    target.innerHTML = template()
 }
 
 export const errorView = () => {

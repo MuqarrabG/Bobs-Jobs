@@ -1,13 +1,16 @@
+// module name: model.js
+// student name: Muhammad Muqarrab Ghori
+// student number: 47111496
 
 import { Auth } from './auth.js'
 export { Model }
 import * as views from "./views.js"
 
 
+
 const Model = {
 
-    //units_url:  "http://localhost:1337/api/units",
-    //books_url:  "http://localhost:1337/api/books",
+    //Model will store links to api items require for the assignment spec
 
     jobs_url:  "http://localhost:1337/api/jobs",
     companies_url: "http://localhost:1337/api/companies",
@@ -16,35 +19,25 @@ const Model = {
     // Model will hold the data stored in the model
 
     DATA: {
-        //allUnits: [],
-        //books: []
-
+    
         allJobs: [],
         allCompanies: [],
-        jobApllications: []
+        jobApllications: [],
+        jobAppID: []
     },
 
-    // single unit data
-    //unitData: null,
+    // Following will hold single data types of there defined variables
 
     jobData: null,
     companyData: null,
     jobAppData: null,
-    
-
-    // fetch unit data from backend
-    /*loadData: () => {
-        fetch(Model.units_url)
-        .then((response) => {
-            return response.json()
-        })
-        .then((data) => {
-            Model.DATA.allUnits = data.data
-            console.log("units loaded:", Model.DATA.allUnits)
-            const event = new CustomEvent("modelUpdated");
-            window.dispatchEvent(event);
-        })
-    },*/
+   
+    /**
+     * Calling this function makes a GET request for jobs data
+     * data is then converted to json
+     * data is then assigned to allJobs array
+     * dispatches modelUpdated event
+     */
 
     loadJobData: () => {
         let filter = "sort[0]=publishedAt%3Adesc"
@@ -62,6 +55,13 @@ const Model = {
         })
     },
 
+    /**
+     * Calling this function makes a GET request for companies data
+     * data is then converted to json
+     * data is then assigned to allCompanies array
+     * dispatches modelUpdated event
+     */
+
     loadCompanyData: () => {
         let filter = "?populate=%2A"
         let url_str = Model.companies_url + filter
@@ -77,24 +77,41 @@ const Model = {
         })
     },
 
+     /**
+     * Calling this function makes a authenticated GET request for job_application data
+     * data is then converted to json
+     * data is then assigned to allCompanies array
+     * dispatches modelUpdated event
+     */
+
     loadJobAppData: () => {
-        fetch(Model.jobapplication_url)
+        console.log('the login token in ', Auth.getJWT())
+        let filter = "?populate=*"
+        let url_str = Model.jobapplication_url + filter
+        fetch(url_str,
+            {
+                method: 'GET',
+                headers: {
+                        Authorization: 'bearer ' + Auth.getJWT(),
+                        //'Content-Type': 'application/json'
+                }
+            })
         .then((response) => {
-            return response.json()
+            return response.json();
         })
         .then((data) => {
             Model.DATA.jobApllications = data.data
-            console.log("job_applications loaded:", Model.DATA.jobApllications)
+            console.log("Job Applications loaded : ", Model.DATA.jobApllications)
             const event = new CustomEvent("modelUpdated");
             window.dispatchEvent(event);
         })
     },
 
 
-    // returns all units
-    /*getUnits: () => {
-        return Model.DATA.allUnits
-    },*/
+    /**
+     * Calling this function returns allJobs array if the size is null or undefined
+     * If the size is defined it will return allJobs array to required size
+     */
 
     getJobs: (size) => {
         let jobs = []
@@ -109,41 +126,31 @@ const Model = {
         }
     },
 
+    // returns allCompanies array
+
     getCompanies: () => {
         return Model.DATA.allCompanies
     },
 
-    getJobApps: () => {
-        return Model.DATA.jobApllications
+    /**
+     * Returns jobs application that are submitted by a user
+     */
+
+    getJobApps: (userID) => {
+        let jobs = []
+        let j = 0;
+        for(let i=0; i < Model.DATA.jobApllications.length; i++) {
+            console.log(Model.DATA.jobApllications[i].attributes?.user?.data?.id)
+            if(Model.DATA.jobApllications[i].attributes?.user?.data?.id === userID) {
+                    jobs[j] = Model.DATA.jobApllications[i].attributes?.job?.data
+                    j++
+            }
+        }
+            return jobs
     },
 
     // returns a unit by id
-    getUnitLocal: (id) => {
-        for(let i=0; i< Model.DATA.allUnits.length; i++){
-           if (Model.DATA.allUnits[i].id == id) {
-               return Model.DATA.allUnits[i]
-           }
-        }
-        return null;
-     },
     
-    getUnit: (id) => {
-        let filter = "?populate=textbook&filters[id][$eq]="
-        let url_str = Model.units_url + filter + id
-        fetch(url_str)
-        .then((response) => {
-            return response.json()
-        })
-        .then((data) => {
-                // console.log("getUnit: .then unit before:", Model.unitData)
-                Model.unitData = data.data[0]
-                // console.log("getUnit: .then unit after:", Model.unitData)
-                views.unitView('content', Model.unitData)
-                const event = new CustomEvent("modelUpdated");
-                window.dispatchEvent(event);
-        })
-    },
-
     getCompanyLocal: (id) => {
         for(let i=0; i< Model.DATA.allCompanies.length; i++){
            if (Model.DATA.allCompanies[i].id == id) {
@@ -152,6 +159,13 @@ const Model = {
         }
         return null;
      },
+
+     /**
+     * Calling this function makes a GET request for company data by id
+     * data is then converted to json
+     * data is then assigned to companyData
+     * dispatches modelUpdated event
+     */
     
     getCompany: (id) => {
         let filter = "?populate=%2A&textbook&filters[id][$eq]="
@@ -165,21 +179,19 @@ const Model = {
                 Model.companyData = data.data[0]
                 // console.log("getUnit: .then unit after:", Model.unitData)
                 views.companyViewName('content', Model.companyData)
-                views.companyView('company-jobs', Model.companyData?.attributes?.jobs?.data, Model.companyData)
+                views.jobsViewBasic('company-jobs', Model.companyData?.attributes?.jobs?.data)
                 const event = new CustomEvent("modelUpdated");
                 window.dispatchEvent(event);
         })
     },
-
-    getJobLocal: (id) => {
-        for(let i=0; i< Model.DATA.allJobs.length; i++){
-           if (Model.DATA.allJobs[i].id == id) {
-               return Model.DATA.allJobs[i]
-           }
-        }
-        return null;
-     },
     
+    /**
+     * Calling this function makes a GET request for job data by id
+     * data is then converted to json
+     * data is then assigned to jobData
+     * dispatches modelUpdated event
+     */
+
     getJob: (id) => {
         let filter = "?populate=%2A&textbook&filters[id][$eq]="
         let url_str = Model.jobs_url + filter + id
@@ -192,20 +204,25 @@ const Model = {
                 Model.jobData = data.data[0]
                 // console.log("getUnit: .then unit after:", Model.unitData)
                 //views.jobView('content', Model.jobData)
+                if(Auth.getUser()) {
+                    views.jobLoggedInView('content', Model.jobData)
+                    //location.reload()
+                } else {
+                    views.jobView('content', Model.jobData)
+                    //location.reload()
+                }
                 const event = new CustomEvent("modelUpdated");
                 window.dispatchEvent(event);
         })
     }, 
     
-    getJobAppLocal: (id) => {
-        for(let i=0; i< Model.DATA.jobApllications.length; i++){
-           if (Model.DATA.jobApllications[i].id == id) {
-               return Model.DATA.jobApllications[i]
-           }
-        }
-        return null;
-     },
-    
+    /**
+     * Calling this function makes a GET request for job-application data by id
+     * data is then converted to json
+     * data is then assigned to jobAppData
+     * dispatches modelUpdated event
+     */
+
     getJobApp: (id) => {
         let filter = "?populate=textbook&filters[id][$eq]="
         let url_str = Model.jobapplication_url + filter + id
@@ -228,10 +245,22 @@ const Model = {
     // addUnit - add a new unit by submitting a request to the server API
     //  formdata is a FormData object containing all fields in the unt object
     // when the request is resolved, creates an "unitAdded" event
-    addUnit: function(c,t,e,o) {
+
+    /**
+     * 
+     * @param {*} t input text from textarea
+     * @param {*} j job that user applied for to create a relation in server API
+     * @param {*} u user information to create a relation in servers API
+     * 
+     * addApplication - add a new job application by submitting a request to the server API
+     * job application is a FormData object containing all fields in the job application object
+     * when the request is resolved, creates an "modelUpdated" event
+     */
+
+    addApplication: function(t,j,u) {
         console.log('the login token in ', Auth.getJWT())
    
-        fetch(Model.units_url,
+        fetch(Model.jobapplication_url,
             {
                 method: 'POST',
                 headers: {
@@ -240,10 +269,9 @@ const Model = {
                 },
                 body: JSON.stringify({
                         data: {
-                            code: c,
-                            title: t,
-                            enrolments: e,
-                            offering: o
+                            text: t,
+                            job: j,
+                            user: u,
                         }
                 })
             })
@@ -251,44 +279,12 @@ const Model = {
             return response.json();
         })
         .then((data) => {
-            console.log("the new entry for unit is", data)
-            Model.DATA.allUnits.push(data);
-            console.log("after data added: ", Model.DATA.allUnits)
+            console.log("the new entry for job_application is", data)
+            // Model.DATA.jobApllications.push(data);
+            // Model.DATA.jobAppID.push(j);
+            // console.log("after data added: ", Model.DATA.jobApllications)
             const event = new CustomEvent("modelUpdated");
             window.dispatchEvent(event);
         })
     },
-
-    // aupdate entolments for a given unit 
-    updateEnrolments: function (unit_id,new_number) {
-            console.log('update Enrolments: token ', Auth.getJWT())
-            console.log('the new enrolments is ', new_number);
-            fetch(this.units_url+'/'+ unit_id, {
-                method: 'PUT',
-                headers: {
-              //      Authorization: 'bearer ' + Auth.getJWT(),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                        "data": {
-                            "enrolments": Number(new_number)
-                          }
-                })
-            })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                console.log("after update", data);
-                //update local copy
-                this.DATA.allUnits = this.DATA.allUnits.map((unit) => {
-                    if (unit.id == unit_id) {
-                        unit.enrolments = new_number;
-                    }
-                    return unit
-                })        
-                const event = new CustomEvent("modelUpdated");
-                window.dispatchEvent(event);
-            })
-    }
 };

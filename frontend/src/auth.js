@@ -1,3 +1,7 @@
+// module name: auth.js
+// student name: Muhammad Muqarrab Ghori
+// student number: 47111496
+
 export { Auth }
 
 const Auth = {
@@ -40,7 +44,10 @@ const Auth = {
             return null
         }
     },
-
+    /**
+     * Calling this function deletes users login information
+     * Which logs off the user
+     */
     logOff: function(){
         delete this.userData.jwt
         delete this.userData.user

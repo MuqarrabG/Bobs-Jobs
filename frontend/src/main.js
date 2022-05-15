@@ -1,17 +1,11 @@
-import { split_hash } from "./util.js"
+// module name: main.js
+// student name: Muhammad Muqarrab Ghori
+// student number: 47111496
+
 import * as views from "./views.js"
 import { Model } from "./model.js"
 import { Router } from './router.js'
 import { Auth } from "./auth.js"
-
-let allJobs = []
-let allCompanies = []
-let allComJob = [[]]
-
-/*window.onload = () => {
-    document.getElementById('main').innerHTML = "<p>Bob will have some job's here</p>"
-}*/
-
 
 const router = new Router(views.errorView)
 
@@ -37,16 +31,28 @@ router.get('/help', () => {
     classChanger('/help')
 })
 
+router.get('/me', () => {
+
+    const jobs = Model.getJobApps(Auth.getUser().id)
+    console.log(jobs)
+
+    views.jobsViewBasic('content', jobs)
+})
+
 router.get('/jobs', (pathInfo) => {
     if(pathInfo.id) {
         console.log("pathid, fetched id", pathInfo.id, Model.jobData)
 
         if(Model.jobData == null || pathInfo.id != Model.jobData.id) {
             Model.getJob(pathInfo.id)
+            //views.jobView('content', Model.jobData)
+
             if(Auth.getUser()) {
                 views.jobLoggedInView('content', Model.jobData)
+                //location.reload()
             } else {
                 views.jobView('content', Model.jobData)
+                //location.reload()
             }
         }
     }
@@ -61,7 +67,7 @@ router.get('/companies', (pathInfo) => {
             Model.getCompany(pathInfo.id)
             console.log('This is the company:', Model.companyData)
             views.companyViewName('content', Model.companyData)
-            views.companyView('company-jobs', Model.companyData?.attributes?.jobs?.data, Model.companyData)
+            views.jobsViewBasic('company-jobs', Model.companyData?.attributes?.jobs?.data)
         }
     }
 
@@ -86,6 +92,11 @@ router.get('/search', (pathInfo) => {
     }
 
 })
+
+/**
+ * 
+ * changes class of object with the href of "path"
+ */
 
 const classChanger = (path) => {
 
@@ -114,78 +125,6 @@ const classChanger = (path) => {
     }
 }
 
-const loadData = () => {
-
-    fetch('/sample-data.json')
-    .then((response) => {
-        return response.json()
-    })
-    .then((data) => {
-        allJobs = data.jobs
-        allCompanies = data.companies
-        redraw()
-    })
-}
-
-/*const setComJob = () => {
-    for(let i = 0; i <= allCompanies; i++) {
-        for(let j = 0; j <= allJobs; i++) {
-            if (allCompanies[i].id === allJobs[j]) {
-                
-            }
-        }
-    }
-}*/
-
-const getCompanyJobs = (id) => {
-    let jobs = []
-    let j = 0;
-
-    for(let i = 0; i < allJobs.length; i++) {
-        if (allJobs[i].attributes.company.data.id == id) {
-            jobs[j] = allJobs[i]
-            j++;
-        }
-    }
-    return jobs
-}
-
-const getJob = (id) => {
-    for(let i=0; i<allJobs.length; i++) {
-        if (allJobs[i].id == id) {
-            return allJobs[i]
-        }
-    }
-    return null
-}
-
-const getJobs = (size) => {
-    let jobs = []
-
-    if(size == null) {
-        return allJobs
-    } else {
-        for(let i = 0; i < size; i++) {
-            jobs[i] = allJobs[i]
-        }
-        return jobs
-    }
-
-}
-
-const getCompany = (id) => {
-    for(let i=0; i<allCompanies.length; i++) {
-        if (allCompanies[i].id == id) {
-            return allCompanies[i]
-        }
-    }
-    return null
-}
-
-const getCompanies = () => {
-    return allCompanies
-}
-
 const redraw = () => {
 
     const hash = router.splitHash()
@@ -212,7 +151,7 @@ const redraw = () => {
     // console.log('break')
     // console.log(Model.DATA.allJobs)
 
-    console.log(document.querySelector('#UserLoggedIn'))
+    //console.log(document.querySelector('#UserLoggedIn'))
 
 }
 
@@ -220,13 +159,11 @@ const bindings = () => {
     searchFormHandler()
 
     loginFormHandler()
+
+    jobAppFormHandler()
 }
 
 function searchFormHandler(){
-    // const searchButton = document.getElementById("searchbutton");
-    // const searchInput = document.querySelector("[data-search]");
-    // const searchForm = document.getElementById('search-form')
-
     let searchButton = document.querySelector('#searchbutton');
     let searchInput = document.querySelector('#search')
 
@@ -234,27 +171,9 @@ function searchFormHandler(){
         console.log(searchInput.value)
         location.href = "/#!/search/" + searchInput.value
     })
-
-    // searchButton.onclick = () => {
-    //     console.log("FUCK")
-    //     searchInput.addEventListener("input", e => {
-    //         let value = e.target.value
-    //         console.log(value)
-    //         let jobs = []
-    //         let j = 0;
-    //         for(let i=0; i < Model.DATA.allJobs.length; i++) {
-    //             if(Model.DATA.allJobs[i].attributes.description.match(value)) {
-    //                 jobs[j] = Model.DATA.allJobs[i]
-    //                 j++
-    //             }
-    //         }
-    //         console.log(jobs)
-    //     })
-    // }
 }
 
 function loginFormHandler(){
-
     if (!Auth.getUser()) {
         // install login handler
         const loginform = document.getElementById('login-form')
@@ -269,29 +188,60 @@ function loginFormHandler(){
         
             //send authInfo to backend for user authentication
             Auth.login(authInfo)
+            //window.location.reload()
         }
     }
 
     if(Auth.getUser()) {
-        views.loggedInView('login-form', Auth.getUser().username)
-        console.log('FUCKING GOT HIM')
+        views.loggedInView('login-form', 'nav main-nav', Auth.getUser().username)
+        //Model.loadJobAppData()
+        console.log('GOT EM')
 
         let logoutButton = document.querySelector('#logoutbutton');
 
         logoutButton.addEventListener('click', () => {
             Auth.logOff()
             console.log(Auth.getUser())
-            views.loggedOutView('login-form')
+            views.loggedOutView('login-form', 'nav main-nav')
+            //window.location.reload()
+            // let event = new CustomEvent('userLogoff')
+            // window.dispatchEvent(event)
         })
     }
 
     if(Auth.userData?.error?.status) {
-        console.log('passssss FUCXKER')
+        console.log('AYO FAM ENTER THE CORRECT DETAILS')
         views.logInErrorView()
-    }
-    
+    } 
 }
 
+function jobAppFormHandler() {
+    let jobAppButton = document.querySelector('#jobApplicationButton');
+
+    if(isNaN(jobAppButton)) {
+        jobAppButton.addEventListener('click', () => {
+            console.log("ITS WORKING FAM", window.location)
+            views.jobAppForm('content')
+
+            const jobAppForm = document.getElementById('jobapplication-form')
+
+            jobAppForm.onsubmit = (event) => {
+                event.preventDefault();
+                const text = jobAppForm.elements['text'].value;
+                console.log(text, Model.jobData.id, Auth.getUser().id)
+
+                Model.addApplication(text, Model.jobData.id, Auth.getUser().id)
+                Model.loadJobAppData()
+                location.href = "/#!/me"
+            }
+        })
+    }
+}
+
+/**
+ * on window load its calls the data company and job load function
+ * to load in the data to make them ready for main.js
+ */
 
 window.onload = () => {
     //redraw()
@@ -299,11 +249,15 @@ window.onload = () => {
 
     Model.loadCompanyData()
     Model.loadJobData()
-    Model.loadJobAppData()
+    //Model.loadJobAppData()
 }
 
 window.addEventListener('modelUpdated', redraw);
-window.addEventListener('userLogin', redraw);
+window.addEventListener('userLogin', () => {
+    //redraw()
+    Model.loadJobAppData()
+});
+// window.addEventListener('userLogoff', redraw)
 
 
 
