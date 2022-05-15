@@ -7,6 +7,8 @@ import { Model } from "./model.js"
 import { Router } from './router.js'
 import { Auth } from "./auth.js"
 
+//creates new Router passes a errorview in case the url being visited is not in url directory
+
 const router = new Router(views.errorView)
 
 router.get('/', () => {
@@ -33,7 +35,7 @@ router.get('/help', () => {
 
 router.get('/me', () => {
 
-    const jobs = Model.getJobApps(Auth.getUser().id)
+    const jobs = Model.getJobUserApps(Auth.getUser().id)
     console.log(jobs)
 
     views.jobsViewBasic('content', jobs)
@@ -163,6 +165,8 @@ const bindings = () => {
     jobAppFormHandler()
 }
 
+// implements the search function and changes the url
+
 function searchFormHandler(){
     let searchButton = document.querySelector('#searchbutton');
     let searchInput = document.querySelector('#search')
@@ -191,6 +195,11 @@ function loginFormHandler(){
             //window.location.reload()
         }
     }
+    
+    /**
+     * IF the user is logged in successfully it changes the view and display who is logged in
+     * Add a logoff button and clicking it would log the user off
+     */
 
     if(Auth.getUser()) {
         views.loggedInView('login-form', 'nav main-nav', Auth.getUser().username)
@@ -208,6 +217,8 @@ function loginFormHandler(){
             // window.dispatchEvent(event)
         })
     }
+
+    //displays a error if the wrong details are added or details don't match with the backend database
 
     if(Auth.userData?.error?.status) {
         console.log('AYO FAM ENTER THE CORRECT DETAILS')

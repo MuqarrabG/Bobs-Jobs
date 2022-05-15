@@ -136,7 +136,7 @@ const Model = {
      * Returns jobs application that are submitted by a user
      */
 
-    getJobApps: (userID) => {
+    getJobUserApps: (userID) => {
         let jobs = []
         let j = 0;
         for(let i=0; i < Model.DATA.jobApllications.length; i++) {
