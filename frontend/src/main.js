@@ -1,6 +1,4 @@
 // module name: main.js
-// student name: Muhammad Muqarrab Ghori
-// student number: 47111496
 
 import * as views from "./views.js"
 import { Model } from "./model.js"

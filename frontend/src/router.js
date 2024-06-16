@@ -1,6 +1,4 @@
 // module name: router.js
-// student name: Muhammad Muqarrab Ghori
-// student number: 47111496
 export class Router {
     constructor(errorHandler) { 
         this.routes = {}

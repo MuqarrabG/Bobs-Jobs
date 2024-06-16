@@ -1,6 +1,5 @@
 // module name: model.js
-// student name: Muhammad Muqarrab Ghori
-// student number: 47111496
+
 
 import { Auth } from './auth.js'
 export { Model }
