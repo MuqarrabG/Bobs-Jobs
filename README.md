@@ -1,6 +1,6 @@
 # Bob's Jobs Web Development
 
-This project implements the Bob's Jobs web application for the COMP2110 
+This project implements the Bob's Jobs web application for the
 Web Development assignment.  
 
 Full details of the assignment requirements are in [the doc folder](doc/assignment.md). 
