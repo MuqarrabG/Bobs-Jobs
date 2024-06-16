@@ -1,4 +1,4 @@
-# COMP2110 Web Development Assignment
+# Bob's Jobs Web Development
 
 This project implements the Bob's Jobs web application for the COMP2110 
 Web Development assignment.  

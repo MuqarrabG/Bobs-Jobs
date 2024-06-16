@@ -2,7 +2,7 @@
 # student name: Muhammad Muqarrab Ghori
 # student number: 47111496
 
-# COMP2110 Bob's Jobs Frontend
+# Bob's Jobs Frontend
 
 This project implements the front-end code for Bob's Jobs.
 
